@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Laporan Saldo Kas Masjid Sholahuddin</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  :root{--teal:#2F5D62;--teal2:#5B8E8A;--mint:#EAF3F1;--sand:#FBF6E9;--sand2:#EADFBE;--gold:#C9A961;--green:#2E7D5B;--terra:#B5543C;--ink:#26393B}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#F4F7F6;color:var(--ink)}
+  header{background:var(--teal);color:#fff;padding:22px 28px}
+  header h1{margin:0;font-size:24px;letter-spacing:.5px}
+  header p{margin:6px 0 0;color:#BFE0DB;font-style:italic;font-size:13px}
+  .wrap{max-width:1150px;margin:0 auto;padding:20px}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+  .card{background:#fff;border-radius:10px;padding:16px;text-align:center;border-top:5px solid var(--c);box-shadow:0 1px 4px rgba(0,0,0,.06)}
+  .card small{display:block;color:var(--teal2);font-weight:bold;font-size:11px;letter-spacing:.6px}
+  .card b{display:block;font-size:26px;margin:8px 0;color:var(--c)}
+  .card i{color:#888;font-size:11px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:20px}
+  @media(max-width:850px){.grid{grid-template-columns:1fr}}
+  .panel{background:#fff;border-radius:10px;padding:18px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+  .panel h2{margin:0 0 12px;font-size:16px;color:var(--teal);border-bottom:2px solid var(--gold);padding-bottom:6px}
+  select{padding:7px 10px;border:2px solid var(--gold);background:#FFF4CC;border-radius:6px;font-weight:bold;color:#1F4E79;margin-right:8px}
+  .row{display:flex;justify-content:space-between;padding:10px 12px;background:var(--mint);border-bottom:1px solid #CFE3DF;font-weight:bold}
+  .row.tot{background:var(--sand2);color:#5A4A1E;font-size:17px;border-top:2px solid var(--gold);border-bottom:2px solid var(--teal)}
+  .in{color:var(--green)} .out{color:var(--terra)}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th{background:var(--teal2);color:#fff;padding:8px}
+  td{padding:7px 8px;border-bottom:1px solid #DCE8E6;text-align:right}
+  td:first-child{text-align:left}
+  tr:nth-child(even) td{background:#F4F9F8}
+  tfoot td{background:var(--sand2);font-weight:bold;color:#5A4A1E}
+  .komp td{background:var(--sand)!important}
+  footer{text-align:center;color:#999;font-size:11px;padding:20px}
+</style>
+</head>
+<body>
+<header>
+  <h1>LAPORAN SALDO KAS MASJID SHOLAHUDDIN</h1>
+  <p>Kanwil DJP Bengkulu dan Lampung • Tahun 2026 • Data s/d <span id="upd"></span></p>
+</header>
+<div class="wrap">
+  <div class="cards" id="cards"></div>
+
+  <div class="grid">
+    <div class="panel">
+      <h2>Laporan Saldo Kas Pekanan (Jumatan)</h2>
+      <select id="selM"></select><select id="selP"></select>
+      <div id="weekly" style="margin-top:14px"></div>
+    </div>
+    <div class="panel">
+      <h2 id="kompTitle">Komposisi Kas</h2>
+      <table class="komp" id="komp"></table>
+      <canvas id="chDonut" height="190" style="margin-top:10px"></canvas>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="panel"><h2>Tren Saldo Akhir per Bulan</h2><canvas id="chLine" height="230"></canvas></div>
+    <div class="panel"><h2>Pemasukan vs Pengeluaran per Bulan</h2><canvas id="chBar" height="230"></canvas></div>
+  </div>
+
+  <div class="panel" style="margin-top:20px">
+    <h2>Ringkasan Bulanan 2026</h2>
+    <table id="tbl"></table>
+  </div>
+</div>
+<footer>Sumber: Workbook Saldo Kas 2026 (sheet Data Dashboard Kas). Kas Ramadan tidak termasuk.</footer>
+
+<script>
+// ▼▼ GANTI BARIS DI BAWAH INI dengan isi sel A84 sheet "Data Dashboard Kas" ▼▼
+const DATA = {"update":"November 2026","bulan":[{"m":"Januari 2026","sa":14654220,"in":11393000,"out":12729500,"ak":13317720,"ko":9626220,"ks":2674500,"kd":1017000},{"m":"Februari 2026","sa":13317720,"in":14203171,"out":9929734,"ak":17591156,"ko":13081656,"ks":3292500,"kd":1217000},{"m":"Maret 2026","sa":17591156,"in":12962990,"out":10514780,"ak":20039366,"ko":16270648,"ks":2328718,"kd":1440000},{"m":"April 2026","sa":20039366,"in":10044466,"out":14169793,"ak":15914039,"ko":11958321,"ks":2515718,"kd":1440000},{"m":"Mei 2026","sa":15914039,"in":10827258,"out":15421952,"ak":11319346,"ko":7363628,"ks":2515718,"kd":1440000},{"m":"Juni 2026","sa":11319346,"in":14956878,"out":9278736,"ak":16997488,"ko":12795770,"ks":2720718,"kd":1481000},{"m":"Juli 2026","sa":16997488,"in":14400000,"out":17967000,"ak":13430488,"ko":12933770,"ks":75000,"kd":421718},{"m":"Agustus 2026","sa":13430488,"in":13764294,"out":15670959,"ak":11523823,"ko":11027105,"ks":75000,"kd":421718},{"m":"September 2026","sa":11523823,"in":17425873,"out":17430725,"ak":11518971,"ko":10626253,"ks":364000,"kd":528718},{"m":"Oktober 2026","sa":11518971,"in":18872000,"out":17527500,"ak":12863471,"ko":11761753,"ks":573000,"kd":528718},{"m":"November 2026","sa":12863471,"in":12483766,"out":6199679,"ak":19147558,"ko":18045840,"ks":573000,"kd":528718}],"pekan":[{"m":"Januari 2026","p":"Jumat 1","sa":14654220,"in":8560000,"out":3586500,"ak":19627720,"la":"Saldo per 1 Januari 2026","lb":"Saldo per 9 Januari 2026"},{"m":"Januari 2026","p":"Jumat 2","sa":19627720,"in":1810000,"out":700000,"ak":20737720,"la":"Saldo per 9 Januari 2026","lb":"Saldo per 16 Januari 2026"},{"m":"Januari 2026","p":"Jumat 3","sa":20737720,"in":0,"out":6556500,"ak":14181220,"la":"Saldo per 16 Januari 2026","lb":"Saldo per 23 Januari 2026"},{"m":"Januari 2026","p":"Jumat 4","sa":14181220,"in":1023000,"out":1886500,"ak":13317720,"la":"Saldo per 23 Januari 2026","lb":"Saldo per 30 Januari 2026"},{"m":"Januari 2026","p":"Jumat 5","sa":13317720,"in":0,"out":0,"ak":13317720,"la":"Saldo per 30 Januari 2026","lb":"Saldo per 31 Januari 2026"},{"m":"Februari 2026","p":"Jumat 1","sa":13317720,"in":6471171,"out":4670234,"ak":15118656,"la":"Saldo per 1 Februari 2026","lb":"Saldo per 6 Februari 2026"},{"m":"Februari 2026","p":"Jumat 2","sa":15118656,"in":5205000,"out":1130000,"ak":19193656,"la":"Saldo per 6 Februari 2026","lb":"Saldo per 13 Februari 2026"},{"m":"Februari 2026","p":"Jumat 3","sa":19193656,"in":1672000,"out":3610000,"ak":17255656,"la":"Saldo per 13 Februari 2026","lb":"Saldo per 20 Februari 2026"},{"m":"Februari 2026","p":"Jumat 4","sa":17255656,"in":855000,"out":519500,"ak":17591156,"la":"Saldo per 20 Februari 2026","lb":"Saldo per 27 Februari 2026"},{"m":"Februari 2026","p":"Jumat 5","sa":17591156,"in":0,"out":0,"ak":17591156,"la":"Saldo per 27 Februari 2026","lb":"Saldo per 28 Februari 2026"},{"m":"Maret 2026","p":"Jumat 1","sa":17591156,"in":5528085,"out":3292617,"ak":19826624,"la":"Saldo per 1 Maret 2026","lb":"Saldo per 6 Maret 2026"},{"m":"Maret 2026","p":"Jumat 2","sa":19826624,"in":4995000,"out":2202000,"ak":22619624,"la":"Saldo per 6 Maret 2026","lb":"Saldo per 13 Maret 2026"},{"m":"Maret 2026","p":"Jumat 3","sa":22619624,"in":1748000,"out":1346782,"ak":23020842,"la":"Saldo per 13 Maret 2026","lb":"Saldo per 20 Maret 2026"},{"m":"Maret 2026","p":"Jumat 4","sa":23020842,"in":0,"out":666500,"ak":22354342,"la":"Saldo per 20 Maret 2026","lb":"Saldo per 27 Maret 2026"},{"m":"Maret 2026","p":"Jumat 5","sa":22354342,"in":691905,"out":3006881,"ak":20039366,"la":"Saldo per 27 Maret 2026","lb":"Saldo per 31 Maret 2026"},{"m":"April 2026","p":"Jumat 1","sa":20039366,"in":0,"out":537000,"ak":19502366,"la":"Saldo per 1 April 2026","lb":"Saldo per 3 April 2026"},{"m":"April 2026","p":"Jumat 2","sa":19502366,"in":7945000,"out":4163000,"ak":23284366,"la":"Saldo per 3 April 2026","lb":"Saldo per 10 April 2026"},{"m":"April 2026","p":"Jumat 3","sa":23284366,"in":870000,"out":2000000,"ak":22154366,"la":"Saldo per 10 April 2026","lb":"Saldo per 17 April 2026"},{"m":"April 2026","p":"Jumat 4","sa":22154366,"in":390000,"out":2106500,"ak":20437866,"la":"Saldo per 17 April 2026","lb":"Saldo per 24 April 2026"},{"m":"April 2026","p":"Jumat 5","sa":20437866,"in":839466,"out":5363293,"ak":15914039,"la":"Saldo per 24 April 2026","lb":"Saldo per 30 April 2026"},{"m":"Mei 2026","p":"Jumat 1","sa":15914039,"in":4150000,"out":2426000,"ak":17638039,"la":"Saldo per 1 Mei 2026","lb":"Saldo per 8 Mei 2026"},{"m":"Mei 2026","p":"Jumat 2","sa":17638039,"in":6201000,"out":2863000,"ak":20976039,"la":"Saldo per 8 Mei 2026","lb":"Saldo per 15 Mei 2026"},{"m":"Mei 2026","p":"Jumat 3","sa":20976039,"in":0,"out":1300000,"ak":19676039,"la":"Saldo per 15 Mei 2026","lb":"Saldo per 22 Mei 2026"},{"m":"Mei 2026","p":"Jumat 4","sa":19676039,"in":474000,"out":8332500,"ak":11817539,"la":"Saldo per 22 Mei 2026","lb":"Saldo per 29 Mei 2026"},{"m":"Mei 2026","p":"Jumat 5","sa":11817539,"in":2258,"out":500452,"ak":11319346,"la":"Saldo per 29 Mei 2026","lb":"Saldo per 31 Mei 2026"},{"m":"Juni 2026","p":"Jumat 1","sa":11319346,"in":1078000,"out":720000,"ak":11677346,"la":"Saldo per 1 Juni 2026","lb":"Saldo per 5 Juni 2026"},{"m":"Juni 2026","p":"Jumat 2","sa":11677346,"in":10235000,"out":3516500,"ak":18395846,"la":"Saldo per 5 Juni 2026","lb":"Saldo per 12 Juni 2026"},{"m":"Juni 2026","p":"Jumat 3","sa":18395846,"in":1109600,"out":1000000,"ak":18505446,"la":"Saldo per 12 Juni 2026","lb":"Saldo per 19 Juni 2026"},{"m":"Juni 2026","p":"Jumat 4","sa":18505446,"in":1794099,"out":2206500,"ak":18093045,"la":"Saldo per 19 Juni 2026","lb":"Saldo per 26 Juni 2026"},{"m":"Juni 2026","p":"Jumat 5","sa":18093045,"in":740179,"out":1835736,"ak":16997488,"la":"Saldo per 26 Juni 2026","lb":"Saldo per 30 Juni 2026"},{"m":"Juli 2026","p":"Jumat 1","sa":16997488,"in":40000,"out":1030000,"ak":16007488,"la":"Saldo per 1 Juli 2026","lb":"Saldo per 3 Juli 2026"},{"m":"Juli 2026","p":"Jumat 2","sa":16007488,"in":10721000,"out":3573000,"ak":23155488,"la":"Saldo per 3 Juli 2026","lb":"Saldo per 10 Juli 2026"},{"m":"Juli 2026","p":"Jumat 3","sa":23155488,"in":1042000,"out":9551000,"ak":14646488,"la":"Saldo per 10 Juli 2026","lb":"Saldo per 17 Juli 2026"},{"m":"Juli 2026","p":"Jumat 4","sa":14646488,"in":1069000,"out":1906500,"ak":13808988,"la":"Saldo per 17 Juli 2026","lb":"Saldo per 24 Juli 2026"},{"m":"Juli 2026","p":"Jumat 5","sa":13808988,"in":1528000,"out":1906500,"ak":13430488,"la":"Saldo per 24 Juli 2026","lb":"Saldo per 31 Juli 2026"},{"m":"Agustus 2026","p":"Jumat 1","sa":13430488,"in":5371169,"out":2276734,"ak":16524923,"la":"Saldo per 1 Agustus 2026","lb":"Saldo per 7 Agustus 2026"},{"m":"Agustus 2026","p":"Jumat 2","sa":16524923,"in":6015000,"out":2000000,"ak":20539923,"la":"Saldo per 7 Agustus 2026","lb":"Saldo per 14 Agustus 2026"},{"m":"Agustus 2026","p":"Jumat 3","sa":20539923,"in":236000,"out":5829500,"ak":14946423,"la":"Saldo per 14 Agustus 2026","lb":"Saldo per 21 Agustus 2026"},{"m":"Agustus 2026","p":"Jumat 4","sa":14946423,"in":2038000,"out":3683000,"ak":13301423,"la":"Saldo per 21 Agustus 2026","lb":"Saldo per 28 Agustus 2026"},{"m":"Agustus 2026","p":"Jumat 5","sa":13301423,"in":104125,"out":1881725,"ak":11523823,"la":"Saldo per 28 Agustus 2026","lb":"Saldo per 31 Agustus 2026"},{"m":"September 2026","p":"Jumat 1","sa":11523823,"in":4141000,"out":1020000,"ak":14644823,"la":"Saldo per 1 September 2026","lb":"Saldo per 4 September 2026"},{"m":"September 2026","p":"Jumat 2","sa":14644823,"in":7318748,"out":3556500,"ak":18407071,"la":"Saldo per 4 September 2026","lb":"Saldo per 11 September 2026"},{"m":"September 2026","p":"Jumat 3","sa":18407071,"in":2314000,"out":4088000,"ak":16633071,"la":"Saldo per 11 September 2026","lb":"Saldo per 18 September 2026"},{"m":"September 2026","p":"Jumat 4","sa":16633071,"in":1762000,"out":4481500,"ak":13913571,"la":"Saldo per 18 September 2026","lb":"Saldo per 25 September 2026"},{"m":"September 2026","p":"Jumat 5","sa":13913571,"in":1890125,"out":4284725,"ak":11518971,"la":"Saldo per 25 September 2026","lb":"Saldo per 30 September 2026"},{"m":"Oktober 2026","p":"Jumat 1","sa":11518971,"in":6924000,"out":5889500,"ak":12553471,"la":"Saldo per 2 Oktober 2026","lb":"Saldo per 9 Oktober 2026"},{"m":"Oktober 2026","p":"Jumat 2","sa":12553471,"in":5431000,"out":4166500,"ak":13817971,"la":"Saldo per 9 Oktober 2026","lb":"Saldo per 16 Oktober 2026"},{"m":"Oktober 2026","p":"Jumat 3","sa":13817971,"in":5095000,"out":5108500,"ak":13804471,"la":"Saldo per 16 Oktober 2026","lb":"Saldo per 23 Oktober 2026"},{"m":"Oktober 2026","p":"Jumat 4","sa":13804471,"in":1422000,"out":2363000,"ak":12863471,"la":"Saldo per 23 Oktober 2026","lb":"Saldo per 30 Oktober 2026"},{"m":"Oktober 2026","p":"Jumat 5","sa":12863471,"in":0,"out":0,"ak":12863471,"la":"Saldo per 30 Oktober 2026","lb":"Saldo per 31 Oktober 2026"},{"m":"November 2026","p":"Jumat 1","sa":12863471,"in":1602895,"out":2443179,"ak":12023187,"la":"Saldo per 30 Oktober 2026","lb":"Saldo per 6 November 2026"},{"m":"November 2026","p":"Jumat 2","sa":12023187,"in":10449871,"out":3756500,"ak":18716558,"la":"Saldo per 6 November 2026","lb":"Saldo per 13 November 2026"},{"m":"November 2026","p":"Jumat 3","sa":18716558,"in":431000,"out":0,"ak":19147558,"la":"Saldo per 13 November 2026","lb":"Saldo per 20 November 2026"},{"m":"November 2026","p":"Jumat 4","sa":19147558,"in":0,"out":0,"ak":19147558,"la":"Saldo per 20 November 2026","lb":"Saldo per 27 November 2026"},{"m":"November 2026","p":"Jumat 5","sa":19147558,"in":0,"out":0,"ak":19147558,"la":"Saldo per 27 November 2026","lb":"Saldo per 30 November 2026"}]};
+// ▲▲ ------------------------------------------------------------------ ▲▲
+
+const rp = n => (n<0?"(":"") + Math.abs(Math.round(n)).toLocaleString("id-ID") + (n<0?")":"");
+const B = DATA.bulan, P = DATA.pekan, last = B[B.length-1] || {};
+const totIn = B.reduce((a,x)=>a+x.in,0), totOut = B.reduce((a,x)=>a+x.out,0);
+document.getElementById("upd").textContent = DATA.update;
+
+const cards = [
+  ["SALDO KAS TERKINI", last.ak, "per akhir "+DATA.update, "#2F5D62"],
+  ["TOTAL PEMASUKAN 2026", totIn, B.length+" bulan tercatat", "#2E7D5B"],
+  ["TOTAL PENGELUARAN 2026", totOut, B.length+" bulan tercatat", "#B5543C"],
+  ["ARUS KAS BERSIH 2026", totIn-totOut, (totIn>=totOut?"Surplus":"Defisit"), "#C9A961"]];
+document.getElementById("cards").innerHTML = cards.map(c =>
+  `<div class="card" style="--c:${c[3]}"><small>${c[0]}</small><b>${rp(c[1]||0)}</b><i>${c[2]}</i></div>`).join("");
+
+// pilihan bulan & pekan
+const selM = document.getElementById("selM"), selP = document.getElementById("selP");
+selM.innerHTML = B.map(x=>`<option>${x.m}</option>`).join("");
+selM.value = last.m;
+function fillP(){
+  const list = P.filter(x=>x.m===selM.value);
+  selP.innerHTML = list.map(x=>`<option>${x.p}</option>`).join("");
+  const withData = list.filter(x=>x.in||x.out); if(withData.length) selP.value = withData[withData.length-1].p;
+}
+let donut;
+function render(){
+  const w = P.find(x=>x.m===selM.value && x.p===selP.value);
+  document.getElementById("weekly").innerHTML = w ? `
+    <div class="row"><span>${w.la}</span><span>${rp(w.sa)}</span></div>
+    <div class="row"><span>Pemasukan pekan ${w.p}</span><span class="in">${rp(w.in)}</span></div>
+    <div class="row"><span>Pengeluaran pekan ${w.p}</span><span class="out">${rp(w.out)}</span></div>
+    <div class="row tot"><span>${w.lb.toUpperCase()}</span><span>${rp(w.ak)}</span></div>` : "Data tidak tersedia";
+  const m = B.find(x=>x.m===selM.value);
+  document.getElementById("kompTitle").textContent = "Komposisi Kas - Akhir " + m.m;
+  document.getElementById("komp").innerHTML = `
+    <tr><th style="text-align:left">Jenis Kas</th><th style="text-align:right">Saldo</th></tr>
+    <tr><td>Kas Operasional Masjid</td><td>${rp(m.ko)}</td></tr>
+    <tr><td>Kas Santunan Yatim &amp; Sosial</td><td>${rp(m.ks)}</td></tr>
+    <tr><td>Kas Kegiatan Dunia Islam</td><td>${rp(m.kd)}</td></tr>
+    <tr><td><b>JUMLAH</b></td><td><b>${rp(m.ko+m.ks+m.kd)}</b></td></tr>`;
+  const vals = [m.ko,m.ks,m.kd];
+  if(donut){donut.data.datasets[0].data = vals; donut.update();}
+  else donut = new Chart(chDonut,{type:"doughnut",data:{labels:["Operasional","Santunan Yatim & Sosial","Dunia Islam"],
+    datasets:[{data:vals,backgroundColor:["#2F5D62","#C9A961","#9DBFB9"]}]},
+    options:{cutout:"55%",plugins:{legend:{position:"bottom"}}}});
+}
+selM.onchange = ()=>{fillP();render();}; selP.onchange = render;
+fillP(); render();
+
+// grafik
+const lbl = B.map(x=>x.m.split(" ")[0].slice(0,3));
+const jt = {ticks:{callback:v=>(v/1e6)+" jt"},grid:{color:"#E3ECEA"}};
+new Chart(chLine,{type:"line",data:{labels:lbl,datasets:[{label:"Saldo Akhir",data:B.map(x=>x.ak),
+  borderColor:"#2F5D62",backgroundColor:"#C9A961",pointRadius:5,tension:.25}]},
+  options:{plugins:{legend:{display:false}},scales:{y:jt}}});
+new Chart(chBar,{type:"bar",data:{labels:lbl,datasets:[
+  {label:"Pemasukan",data:B.map(x=>x.in),backgroundColor:"#5B8E8A"},
+  {label:"Pengeluaran",data:B.map(x=>x.out),backgroundColor:"#D49A86"}]},
+  options:{plugins:{legend:{position:"bottom"}},scales:{y:jt}}});
+
+// tabel bulanan
+document.getElementById("tbl").innerHTML =
+  `<thead><tr><th>Bulan</th><th>Saldo Awal</th><th>Pemasukan</th><th>Pengeluaran</th><th>Arus Bersih</th><th>Saldo Akhir</th></tr></thead><tbody>` +
+  B.map(x=>`<tr><td>${x.m}</td><td>${rp(x.sa)}</td><td class="in">${rp(x.in)}</td><td class="out">${rp(x.out)}</td>
+    <td class="${x.in-x.out<0?'out':''}">${rp(x.in-x.out)}</td><td>${rp(x.ak)}</td></tr>`).join("") +
+  `</tbody><tfoot><tr><td>TOTAL 2026</td><td>${rp(B[0]?B[0].sa:0)}</td><td>${rp(totIn)}</td><td>${rp(totOut)}</td><td>${rp(totIn-totOut)}</td><td>${rp(last.ak||0)}</td></tr></tfoot>`;
+</script>
+</body>
+</html>
