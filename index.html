@@ -133,7 +133,7 @@ const cards = [
   ["SALDO KAS TERKINI", last.ak, "per akhir "+DATA.update, "#2F5D62"],
   ["TOTAL PEMASUKAN 2026", totIn, B.length+" bulan tercatat", "#2E7D5B"],
   ["TOTAL PENGELUARAN 2026", totOut, B.length+" bulan tercatat", "#B5543C"],
-  ["ARUS KAS BERSIH 2026", totIn-totOut, (totIn>=totOut?"Surplus":"Defisit"), "#C9A961"]];
+  ["SELISIH PEMASUKAN − PENGELUARAN 2026", totIn-totOut, (totIn>=totOut?"Surplus":"Defisit"), "#C9A961"]];
 document.getElementById("cards").innerHTML = cards.map(c =>
   `<div class="card" style="--c:${c[3]}"><small>${c[0]}</small><b>${rp(c[1]||0)}</b><i>${c[2]}</i></div>`).join("");
 
@@ -189,7 +189,7 @@ new Chart(chBar,{type:"bar",data:{labels:lbl,datasets:[
 
 // tabel bulanan
 document.getElementById("tbl").innerHTML =
-  `<thead><tr><th>Bulan</th><th>Saldo Awal</th><th>Pemasukan</th><th>Pengeluaran</th><th>Arus Bersih</th><th>Saldo Akhir</th></tr></thead><tbody>` +
+  `<thead><tr><th>Bulan</th><th>Saldo Awal</th><th>Pemasukan</th><th>Pengeluaran</th><th>Selisih</th><th>Saldo Akhir</th></tr></thead><tbody>` +
   B.map(x=>`<tr><td>${x.m}</td><td>${rp(x.sa)}</td><td class="in">${rp(x.in)}</td><td class="out">${rp(x.out)}</td>
     <td class="${x.in-x.out<0?'out':''}">${rp(x.in-x.out)}</td><td>${rp(x.ak)}</td></tr>`).join("") +
   `</tbody><tfoot><tr><td>TOTAL 2026</td><td>${rp(B[0]?B[0].sa:0)}</td><td>${rp(totIn)}</td><td>${rp(totOut)}</td><td>${rp(totIn-totOut)}</td><td>${rp(last.ak||0)}</td></tr></tfoot>`;
