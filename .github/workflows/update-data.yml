@@ -1,0 +1,49 @@
+name: Update data dari OneDrive
+
+on:
+  schedule:
+    - cron: "17 * * * *"   # tiap jam (menit ke-17, waktu UTC)
+  workflow_dispatch:        # bisa dijalankan manual dari tab Actions
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-data
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Pasang openpyxl
+        run: pip install openpyxl
+
+      - name: Unduh Excel dari OneDrive
+        env:
+          SHARE_URL: ${{ secrets.ONEDRIVE_SHARE_URL }}
+        run: |
+          test -n "$SHARE_URL" || { echo "Secret ONEDRIVE_SHARE_URL belum diisi"; exit 1; }
+          TOKEN="u!$(printf '%s' "$SHARE_URL" | base64 -w0 | tr '+/' '-_' | tr -d '=')"
+          curl -fsSL "https://api.onedrive.com/v1.0/shares/${TOKEN}/root/content" -o saldo.xlsx
+          python3 - <<'PY'
+          import zipfile; zipfile.ZipFile("saldo.xlsx").testzip(); print("xlsx valid")
+          PY
+
+      - name: Perbarui data di index.html
+        run: python3 scripts/update_data.py saldo.xlsx index.html
+
+      - name: Commit jika ada perubahan
+        run: |
+          rm -f saldo.xlsx
+          if git diff --quiet; then echo "Tidak ada perubahan"; exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -am "Update data otomatis dari OneDrive ($(TZ=Asia/Jakarta date '+%d %b %Y %H:%M') WIB)"
+          git push
