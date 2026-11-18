@@ -1,8 +1,11 @@
 name: Update data dari OneDrive
 
 on:
-  schedule:
-    - cron: "17 * * * *"   # tiap jam (menit ke-17, waktu UTC)
+  # Jadwal otomatis dimatikan: link OneDrive pribadi format baru (1drv.ms/x/c/...)
+  # dialihkan ke halaman login sehingga tidak bisa diunduh dari server GitHub.
+  # Aktifkan lagi dengan menambahkan:
+  #   schedule:
+  #     - cron: "17 * * * *"
   workflow_dispatch:        # bisa dijalankan manual dari tab Actions
 
 permissions:
