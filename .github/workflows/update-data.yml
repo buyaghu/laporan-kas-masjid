@@ -30,11 +30,25 @@ jobs:
           SHARE_URL: ${{ secrets.ONEDRIVE_SHARE_URL }}
         run: |
           test -n "$SHARE_URL" || { echo "Secret ONEDRIVE_SHARE_URL belum diisi"; exit 1; }
-          TOKEN="u!$(printf '%s' "$SHARE_URL" | base64 -w0 | tr '+/' '-_' | tr -d '=')"
-          curl -fsSL "https://api.onedrive.com/v1.0/shares/${TOKEN}/root/content" -o saldo.xlsx
-          python3 - <<'PY'
-          import zipfile; zipfile.ZipFile("saldo.xlsx").testzip(); print("xlsx valid")
-          PY
+          URL="$(printf '%s' "$SHARE_URL" | tr -d '[:space:]')"
+          echo "Panjang link: ${#URL} karakter; diawali: ${URL:0:22}"
+          ok() { python3 -c "import zipfile,sys; zipfile.ZipFile('saldo.xlsx').testzip()" 2>/dev/null; }
+
+          # Cara 1: API shares OneDrive
+          TOKEN="u!$(printf '%s' "$URL" | base64 -w0 | tr '+/' '-_' | tr -d '=')"
+          CODE=$(curl -sL -o saldo.xlsx -w '%{http_code}' "https://api.onedrive.com/v1.0/shares/${TOKEN}/root/content" || true)
+          echo "Cara 1 (API shares): HTTP $CODE"
+          if ! ok; then
+            # Cara 2: ikuti link dan paksa unduh langsung
+            if [[ "$URL" == *"?"* ]]; then DL="${URL}&download=1"; else DL="${URL}?download=1"; fi
+            CODE=$(curl -sL -o saldo.xlsx -w '%{http_code}' "$DL" || true)
+            echo "Cara 2 (download=1): HTTP $CODE"
+          fi
+          if ! ok; then
+            echo "GAGAL: file yang terunduh bukan xlsx. Pastikan link OneDrive: Anyone + Can view, tanpa password."
+            exit 1
+          fi
+          echo "xlsx valid"
 
       - name: Perbarui data di index.html
         run: python3 scripts/update_data.py saldo.xlsx index.html
