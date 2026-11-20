@@ -9,7 +9,8 @@
   :root{--teal:#2F5D62;--teal2:#5B8E8A;--mint:#EAF3F1;--sand:#FBF6E9;--sand2:#EADFBE;--gold:#C9A961;--green:#2E7D5B;--terra:#B5543C;--ink:#26393B}
   *{box-sizing:border-box}
   body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#F4F7F6;color:var(--ink)}
-  header{background:var(--teal);color:#fff;padding:22px 28px}
+  header{background:var(--teal);color:#fff;padding:16px 28px;display:flex;align-items:center;gap:18px}
+  header .logo{width:78px;height:auto;flex:none}
   header h1{margin:0;font-size:24px;letter-spacing:.5px}
   header p{margin:6px 0 0;color:#BFE0DB;font-style:italic;font-size:13px}
   .wrap{max-width:1150px;margin:0 auto;padding:20px}
@@ -59,6 +60,14 @@
   table.wk tfoot td{background:var(--sand2);color:#5A4A1E;font-size:16px;border-top:2px solid var(--gold);border-bottom:none}
   #tbl{min-width:640px}
   #tbl td:first-child,#tbl th:first-child{white-space:nowrap}
+  .view{display:none}
+  .view.on{display:block}
+  .view.cards.on{display:grid}
+  .view.grid.on{display:grid}
+  .view.panel{margin-top:0!important}
+  .view.grid,.view.cards{margin-top:0}
+  .view.cards .card{padding:26px 16px}
+  .view.cards .card b{font-size:30px}
   /* ===== Menu navigasi ===== */
   .layout{display:flex;align-items:flex-start;max-width:1400px;margin:0 auto}
   .layout .wrap{flex:1;min-width:0;margin:0}
@@ -67,35 +76,55 @@
   nav.menu a:hover{background:var(--mint)}
   nav.menu a.active{background:#fff;border-left-color:var(--gold);box-shadow:0 1px 4px rgba(0,0,0,.08)}
   nav.menu a span{font-size:16px}
-  html{scroll-behavior:smooth}
-  .sec{scroll-margin-top:16px}
   @media(max-width:900px){
     .layout{display:block}
     nav.menu{position:sticky;top:0;z-index:20;width:auto;max-height:none;display:flex;gap:6px;overflow-x:auto;overflow-y:hidden;padding:8px 12px;background:var(--teal);-webkit-overflow-scrolling:touch}
     nav.menu a{flex:none;margin:0;padding:8px 12px;color:#fff;border-left:0;border-radius:18px;font-size:13px;white-space:nowrap}
     nav.menu a:hover{background:rgba(255,255,255,.15)}
     nav.menu a.active{background:var(--gold);color:#26393B;box-shadow:none}
-    .sec{scroll-margin-top:60px}
+    header{padding:14px 16px}
+    header .logo{width:56px}
+    header h1{font-size:18px}
   }
 </style>
 </head>
 <body>
 <header>
-  <h1>LAPORAN SALDO KAS MASJID SHOLAHUDDIN</h1>
-  <p>Kanwil DJP Bengkulu dan Lampung • Tahun 2026 • Data s/d <span id="upd"></span></p>
+  <svg class="logo" viewBox="0 0 120 100" aria-label="Sketsa masjid" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M60 6 C57 9 57 14 60 16 C56 16 53 13 53 9.5 C53 5 57 2.5 60 6 Z" stroke-width="1.6"/>
+    <path d="M60 18 V26"/>
+    <path d="M33 62 C32 40 46 28 60 26 C74 28 88 40 87 62"/>
+    <path d="M38 55 C42 46 50 40 60 38" stroke-width="1.2" opacity=".6"/>
+    <path d="M30 62 H90"/>
+    <path d="M30 62 V90 M90 62 V90 M30 90 H90"/>
+    <path d="M52 90 V76 C52 69 68 69 68 76 V90"/>
+    <path d="M36 76 V70 C36 66 44 66 44 70 V76 Z M76 76 V70 C76 66 84 66 84 70 V76 Z" stroke-width="1.4"/>
+    <path d="M12 90 V44 L16 36 L20 44 V90"/>
+    <path d="M16 36 V28 M13.5 28 H18.5"/>
+    <path d="M12 56 H20 M12 70 H20" stroke-width="1.4"/>
+    <path d="M100 90 V44 L104 36 L108 44 V90"/>
+    <path d="M104 36 V28 M101.5 28 H106.5"/>
+    <path d="M100 56 H108 M100 70 H108" stroke-width="1.4"/>
+    <path d="M6 90 H114"/>
+    <path d="M8 94 L22 94 M36 95 L60 95 M76 94 L112 94" stroke-width="1" opacity=".5"/>
+  </svg>
+  <div class="ht">
+    <h1>LAPORAN SALDO KAS MASJID SHOLAHUDDIN</h1>
+    <p>Kanwil DJP Bengkulu dan Lampung • Tahun 2026 • Data s/d <span id="upd"></span></p>
+  </div>
 </header>
 <div class="layout">
 <nav class="menu" id="menu">
-  <a href="#ringkasan"><span>🏠</span>Ringkasan</a>
+  <a href="#home"><span>🏠</span>Beranda</a>
   <a href="#pekanan"><span>📅</span>Kas Pekanan</a>
   <a href="#grafik"><span>📈</span>Grafik</a>
   <a href="#rincian"><span>🧾</span>Rincian Akun</a>
   <a href="#bulanan"><span>🗓️</span>Ringkasan Bulanan</a>
 </nav>
 <div class="wrap">
-  <div class="cards sec" id="ringkasan"><span id="cardsInner" style="display:contents"></span></div>
+  <div class="cards view" id="home"><span id="cardsInner" style="display:contents"></span></div>
 
-  <div class="grid sec" id="pekanan">
+  <div class="grid view" id="pekanan">
     <div class="panel">
       <h2>Laporan Saldo Kas Pekanan (Jumatan)</h2>
       <select id="selM"></select><select id="selP"></select>
@@ -108,12 +137,12 @@
     </div>
   </div>
 
-  <div class="grid sec" id="grafik">
+  <div class="grid view" id="grafik">
     <div class="panel"><h2>Tren Saldo Akhir per Bulan</h2><canvas id="chLine" height="230"></canvas></div>
     <div class="panel"><h2>Pemasukan vs Pengeluaran per Bulan</h2><canvas id="chBar" height="230"></canvas></div>
   </div>
 
-  <div class="panel sec" style="margin-top:20px" id="rincian">
+  <div class="panel view" id="rincian">
     <h2>Rincian Pemasukan &amp; Pengeluaran per Akun</h2>
     <div class="filters">
       <label>Bulan <select id="rcM"></select></label>
@@ -125,7 +154,7 @@
     <div class="scroll"><table id="rcTrx"></table></div>
   </div>
 
-  <div class="panel sec" style="margin-top:20px" id="bulanan">
+  <div class="panel view" id="bulanan">
     <h2>Ringkasan Bulanan 2026</h2>
     <div class="scroll"><table id="tbl"></table></div>
   </div>
@@ -322,16 +351,20 @@ document.getElementById("tbl").innerHTML =
 })();
 </script>
 <script>
+// menu: satu halaman per tampilan
 (function(){
   const links=[...document.querySelectorAll("#menu a")];
-  const secs=links.map(a=>document.querySelector(a.getAttribute("href")));
-  function spy(){
-    let i=0; const y=window.innerHeight*0.3;
-    secs.forEach((el,k)=>{ if(el && el.getBoundingClientRect().top<=y) i=k; });
-    if(window.innerHeight+window.scrollY>=document.body.scrollHeight-4) i=secs.length-1;
-    links.forEach((a,k)=>a.classList.toggle("active",k===i));
+  const ids=links.map(a=>a.getAttribute("href").slice(1));
+  function show(){
+    let id=location.hash.slice(1); if(ids.indexOf(id)<0) id=ids[0];
+    ids.forEach((x,k)=>{
+      document.getElementById(x).classList.toggle("on",x===id);
+      links[k].classList.toggle("active",x===id);
+    });
+    if(window.Chart && Chart.instances){ Object.values(Chart.instances).forEach(c=>{try{c.resize();}catch(e){}}); }
+    window.scrollTo(0,0);
   }
-  addEventListener("scroll",spy,{passive:true}); addEventListener("resize",spy); spy();
+  addEventListener("hashchange",show); show();
 })();
 </script>
 </body>
