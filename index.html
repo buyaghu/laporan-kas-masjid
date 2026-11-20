@@ -59,6 +59,24 @@
   table.wk tfoot td{background:var(--sand2);color:#5A4A1E;font-size:16px;border-top:2px solid var(--gold);border-bottom:none}
   #tbl{min-width:640px}
   #tbl td:first-child,#tbl th:first-child{white-space:nowrap}
+  /* ===== Menu navigasi ===== */
+  .layout{display:flex;align-items:flex-start;max-width:1400px;margin:0 auto}
+  .layout .wrap{flex:1;min-width:0;margin:0}
+  nav.menu{position:sticky;top:0;align-self:flex-start;width:220px;flex:none;padding:20px 0 20px 16px;max-height:100vh;overflow-y:auto}
+  nav.menu a{display:flex;align-items:center;gap:10px;padding:11px 14px;margin-bottom:4px;border-radius:8px;color:var(--teal);text-decoration:none;font-size:14px;font-weight:bold;border-left:4px solid transparent}
+  nav.menu a:hover{background:var(--mint)}
+  nav.menu a.active{background:#fff;border-left-color:var(--gold);box-shadow:0 1px 4px rgba(0,0,0,.08)}
+  nav.menu a span{font-size:16px}
+  html{scroll-behavior:smooth}
+  .sec{scroll-margin-top:16px}
+  @media(max-width:900px){
+    .layout{display:block}
+    nav.menu{position:sticky;top:0;z-index:20;width:auto;max-height:none;display:flex;gap:6px;overflow-x:auto;overflow-y:hidden;padding:8px 12px;background:var(--teal);-webkit-overflow-scrolling:touch}
+    nav.menu a{flex:none;margin:0;padding:8px 12px;color:#fff;border-left:0;border-radius:18px;font-size:13px;white-space:nowrap}
+    nav.menu a:hover{background:rgba(255,255,255,.15)}
+    nav.menu a.active{background:var(--gold);color:#26393B;box-shadow:none}
+    .sec{scroll-margin-top:60px}
+  }
 </style>
 </head>
 <body>
@@ -66,10 +84,18 @@
   <h1>LAPORAN SALDO KAS MASJID SHOLAHUDDIN</h1>
   <p>Kanwil DJP Bengkulu dan Lampung • Tahun 2026 • Data s/d <span id="upd"></span></p>
 </header>
+<div class="layout">
+<nav class="menu" id="menu">
+  <a href="#ringkasan"><span>🏠</span>Ringkasan</a>
+  <a href="#pekanan"><span>📅</span>Kas Pekanan</a>
+  <a href="#grafik"><span>📈</span>Grafik</a>
+  <a href="#rincian"><span>🧾</span>Rincian Akun</a>
+  <a href="#bulanan"><span>🗓️</span>Ringkasan Bulanan</a>
+</nav>
 <div class="wrap">
-  <div class="cards" id="cards"></div>
+  <div class="cards sec" id="ringkasan"><span id="cardsInner" style="display:contents"></span></div>
 
-  <div class="grid">
+  <div class="grid sec" id="pekanan">
     <div class="panel">
       <h2>Laporan Saldo Kas Pekanan (Jumatan)</h2>
       <select id="selM"></select><select id="selP"></select>
@@ -82,12 +108,12 @@
     </div>
   </div>
 
-  <div class="grid">
+  <div class="grid sec" id="grafik">
     <div class="panel"><h2>Tren Saldo Akhir per Bulan</h2><canvas id="chLine" height="230"></canvas></div>
     <div class="panel"><h2>Pemasukan vs Pengeluaran per Bulan</h2><canvas id="chBar" height="230"></canvas></div>
   </div>
 
-  <div class="panel" style="margin-top:20px" id="rincian">
+  <div class="panel sec" style="margin-top:20px" id="rincian">
     <h2>Rincian Pemasukan &amp; Pengeluaran per Akun</h2>
     <div class="filters">
       <label>Bulan <select id="rcM"></select></label>
@@ -99,10 +125,11 @@
     <div class="scroll"><table id="rcTrx"></table></div>
   </div>
 
-  <div class="panel" style="margin-top:20px">
+  <div class="panel sec" style="margin-top:20px" id="bulanan">
     <h2>Ringkasan Bulanan 2026</h2>
     <div class="scroll"><table id="tbl"></table></div>
   </div>
+</div>
 </div>
 <footer>Sumber: Workbook Saldo Kas 2026 (sheet Data Dashboard Kas). Kas Ramadan tidak termasuk.</footer>
 
@@ -136,7 +163,7 @@ const cards = [
   ["TOTAL PEMASUKAN 2026", totIn, B.length+" bulan tercatat", "#2E7D5B"],
   ["TOTAL PENGELUARAN 2026", totOut, B.length+" bulan tercatat", "#B5543C"],
   ["SELISIH PEMASUKAN − PENGELUARAN 2026", totIn-totOut, (totIn>=totOut?"Surplus":"Defisit"), "#C9A961"]];
-document.getElementById("cards").innerHTML = cards.map(c =>
+document.getElementById("cardsInner").innerHTML = cards.map(c =>
   `<div class="card" style="--c:${c[3]}"><small>${c[0]}</small><b>${rp(c[1]||0)}</b><i>${c[2]}</i></div>`).join("");
 
 // pilihan bulan & pekan
@@ -292,6 +319,19 @@ document.getElementById("tbl").innerHTML =
   sJ.addEventListener("change", ()=>{ selAcc=null; render(); });
 
   fillPekan(); render();
+})();
+</script>
+<script>
+(function(){
+  const links=[...document.querySelectorAll("#menu a")];
+  const secs=links.map(a=>document.querySelector(a.getAttribute("href")));
+  function spy(){
+    let i=0; const y=window.innerHeight*0.3;
+    secs.forEach((el,k)=>{ if(el && el.getBoundingClientRect().top<=y) i=k; });
+    if(window.innerHeight+window.scrollY>=document.body.scrollHeight-4) i=secs.length-1;
+    links.forEach((a,k)=>a.classList.toggle("active",k===i));
+  }
+  addEventListener("scroll",spy,{passive:true}); addEventListener("resize",spy); spy();
 })();
 </script>
 </body>
