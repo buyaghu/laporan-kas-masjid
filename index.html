@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Laporan Saldo Kas Masjid Sholahuddin</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script data-goatcounter="https://dkm.goatcounter.com/count" data-goatcounter-settings='{"no_onload":true}' async src="//gc.zgo.at/count.js"></script>
 <style>
   :root{--teal:#2F5D62;--teal2:#5B8E8A;--mint:#EAF3F1;--sand:#FBF6E9;--sand2:#EADFBE;--gold:#C9A961;--green:#2E7D5B;--terra:#B5543C;--ink:#26393B}
   *{box-sizing:border-box}
@@ -401,6 +402,13 @@ document.getElementById("tbl").innerHTML =
     });
     if(window.Chart && Chart.instances){ Object.values(Chart.instances).forEach(c=>{try{c.resize();}catch(e){}}); }
     window.scrollTo(0,0);
+    hit("/"+id);
+  }
+  // hitung kunjungan per menu (GoatCounter), tunggu skrip termuat
+  function hit(path,n){
+    n=n||0;
+    if(window.goatcounter && window.goatcounter.count){ try{ window.goatcounter.count({path:path}); }catch(e){} }
+    else if(n<20){ setTimeout(()=>hit(path,n+1),500); }
   }
   addEventListener("hashchange",show); show();
 })();
