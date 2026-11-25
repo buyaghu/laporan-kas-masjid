@@ -136,6 +136,7 @@
   <div class="ht">
     <h1>LAPORAN SALDO KAS MASJID SHOLAHUDDIN</h1>
     <p>Kanwil DJP Bengkulu dan Lampung • Tahun 2026 • Data s/d <span id="upd"></span></p>
+    <p>Update terakhir: <span id="updtgl"></span></p>
   </div>
 </header>
 <div class="layout">
@@ -261,6 +262,12 @@ const rp = n => (n<0?"(":"") + Math.abs(Math.round(n)).toLocaleString("id-ID") +
 const B = DATA.bulan, P = DATA.pekan, last = B[B.length-1] || {};
 const totIn = B.reduce((a,x)=>a+x.in,0), totOut = B.reduce((a,x)=>a+x.out,0);
 document.getElementById("upd").textContent = DATA.update;
+(function(){
+  var mi=0, hari=0;
+  TRX.forEach(function(t){ if(t[0]>mi){mi=t[0];hari=t[2];} else if(t[0]===mi && t[2]>hari){hari=t[2];} });
+  var nama = mi ? DATA.bulan[mi-1].m : DATA.update;
+  document.getElementById("updtgl").textContent = (hari ? hari+" " : "") + nama;
+})();
 
 const cards = [
   ["SALDO KAS TERKINI", last.ak, "per akhir "+DATA.update, "#2F5D62"],
