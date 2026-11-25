@@ -3,6 +3,7 @@
 validasi, lalu ganti blok DATA-START..DATA-END di index.html.
 Keluar dengan kode != 0 (tanpa mengubah file) jika validasi gagal."""
 import json, re, sys
+from datetime import datetime, timedelta, timezone
 from openpyxl import load_workbook
 
 XLSX, HTML = sys.argv[1], sys.argv[2]
@@ -66,5 +67,9 @@ if not pat.search(html):
 out = pat.sub(lambda m: m.group(1) + new_block + m.group(2), html, count=1)
 if out == html:
     print("Tidak ada perubahan data."); sys.exit(0)
+BULAN = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"]
+now = datetime.now(timezone(timedelta(hours=7)))  # WIB
+tgl = f"{now.day} {BULAN[now.month-1]} {now.year}"
+out = re.sub(r'const TGL_INPUT = "[^"]*";', f'const TGL_INPUT = "{tgl}";', out, count=1)
 open(HTML, "w", encoding="utf-8").write(out)
 print(f"OK: data diperbarui ({data['update']}, {len(bulan)} bulan, {len(trx)} transaksi)")
