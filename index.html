@@ -137,6 +137,7 @@
     <h1>LAPORAN SALDO KAS MASJID SHOLAHUDDIN</h1>
     <p>Kanwil DJP Bengkulu dan Lampung • Tahun 2026 • Data s/d <span id="upd"></span></p>
     <p>Update terakhir: <span id="updtgl"></span></p>
+    <p id="hitsWrap" style="display:none">👁️ Total kunjungan: <b id="hits"></b></p>
   </div>
 </header>
 <div class="layout">
@@ -168,11 +169,11 @@
   <div class="panel view" id="maklumat">
     <h2>Maklumat</h2>
     <div class="mk">
-      <div class="tgl">Info Sholat Jum'at, 20 Nopember 2026 / 10 Jumadil Akhir 1448 H</div>
+      <div class="tgl">Info Sholat Jum'at, 27 Nopember 2026 / 17 Jumadil Akhir 1448 H</div>
       <p class="msj">🕌 Masjid Sholahuddin<br>Kanwil DJP Bengkulu dan Lampung</p>
       <div class="box">
-        <b>Khotib dan Imam</b><br>Ust. Ahmad Gofur<br>
-        <b>🕛 Waktu Dhuhur/Jum'at</b><br>11.48 WIB
+        <b>Khotib dan Imam</b><br>Ust. Zulfikar Nazir Hasan<br>
+        <b>🕛 Waktu Dhuhur/Jum'at</b><br>11.50 WIB
       </div>
       <div class="box">
         Salurkan infaq, shodaqoh, dan jariyah terbaik Anda untuk operasional masjid &amp; dakwah Islam melalui rekening:
@@ -182,32 +183,33 @@
         <div style="margin-top:10px"><button type="button" id="rekCopy">Salin nomor rekening</button></div>
       </div>
       <p class="ajak">Menghimbau dan mengajak jamaah sekalian untuk dapat mengikuti Sholat Jum'at di Masjid Sholahuddin.</p>
+      <p class="ajak" style="font-style:italic;border-top:1px dashed #ccc;padding-top:10px">&ldquo;Wahai orang-orang yang beriman! Apabila telah diseru untuk melaksanakan sholat pada hari Jum'at, maka segeralah kamu mengingat Allah dan tinggalkanlah jual beli. Yang demikian itu lebih baik bagimu jika kamu mengetahui.&rdquo;<br><b>QS. Al-Jumu'ah: 9</b></p>
     </div>
   </div>
 
   <div class="panel view" id="hadits">
-    <h2>Hadits Pekanan: Keutamaan Infaq</h2>
-    <p style="margin:0 0 16px;color:var(--teal2);font-size:13px;font-style:italic">Pekan Jumat, 20 November 2026 • Hadits shahih riwayat Bukhari dan Muslim</p>
+    <h2>Hadits Pekanan: Keutamaan Hari Jum'at</h2>
+    <p style="margin:0 0 16px;color:var(--teal2);font-size:13px;font-style:italic">Pekan Jumat, 27 November 2026 • Hadits shahih riwayat Bukhari dan Muslim</p>
 
     <div class="hd">
       <span class="no">Hadits 1</span>
-      <p class="ar">«مَا مِنْ يَوْمٍ يُصْبِحُ الْعِبَادُ فِيهِ إِلَّا مَلَكَانِ يَنْزِلَانِ، فَيَقُولُ أَحَدُهُمَا: اللَّهُمَّ أَعْطِ مُنْفِقًا خَلَفًا، وَيَقُولُ الْآخَرُ: اللَّهُمَّ أَعْطِ مُمْسِكًا تَلَفًا»</p>
-      <p class="tr">Dari Abu Hurairah radhiyallahu 'anhu, Rasulullah shallallahu 'alaihi wa sallam bersabda: &ldquo;Tidak ada satu hari pun ketika para hamba berada di waktu pagi, kecuali dua malaikat turun. Salah satunya berdoa: &lsquo;Ya Allah, berilah ganti bagi orang yang berinfak.&rsquo; Yang lain berdoa: &lsquo;Ya Allah, berilah kebinasaan bagi orang yang menahan hartanya.&rsquo;&rdquo;</p>
-      <div class="src">HR. Bukhari no. 1442 dan Muslim no. 1010</div>
+      <p class="ar">«خَيْرُ يَوْمٍ طَلَعَتْ عَلَيْهِ الشَّمْسُ يَوْمُ الْجُمُعَةِ، فِيهِ خُلِقَ آدَمُ، وَفِيهِ أُدْخِلَ الْجَنَّةَ، وَفِيهِ أُخْرِجَ مِنْهَا، وَلَا تَقُومُ السَّاعَةُ إِلَّا فِي يَوْمِ الْجُمُعَةِ»</p>
+      <p class="tr">Dari Abu Hurairah radhiyallahu 'anhu, Rasulullah shallallahu 'alaihi wa sallam bersabda: &ldquo;Sebaik-baik hari yang matahari terbit padanya adalah hari Jum'at. Pada hari itu Adam diciptakan, pada hari itu ia dimasukkan ke surga, pada hari itu pula ia dikeluarkan darinya, dan tidaklah kiamat terjadi kecuali pada hari Jum'at.&rdquo;</p>
+      <div class="src">HR. Muslim no. 854</div>
     </div>
 
     <div class="hd">
       <span class="no">Hadits 2</span>
-      <p class="ar">«قَالَ اللَّهُ: أَنْفِقْ يَا ابْنَ آدَمَ أُنْفِقْ عَلَيْكَ»</p>
-      <p class="tr">Dari Abu Hurairah radhiyallahu 'anhu, Rasulullah shallallahu 'alaihi wa sallam bersabda: &ldquo;Allah Ta'ala berfirman: &lsquo;Berinfaklah wahai anak Adam, niscaya Aku akan berinfak (memberi karunia) kepadamu.&rsquo;&rdquo;</p>
-      <div class="src">HR. Bukhari no. 5352 dan Muslim no. 993</div>
+      <p class="ar">«مَنِ اغْتَسَلَ ثُمَّ أَتَى الْجُمُعَةَ، فَصَلَّى مَا قُدِّرَ لَهُ، ثُمَّ أَنْصَتَ حَتَّى يَفْرُغَ مِنْ خُطْبَتِهِ، ثُمَّ يُصَلِّي مَعَهُ، غُفِرَ لَهُ مَا بَيْنَهُ وَبَيْنَ الْجُمُعَةِ الْأُخْرَى، وَفَضْلُ ثَلَاثَةِ أَيَّامٍ»</p>
+      <p class="tr">Dari Abu Hurairah radhiyallahu 'anhu, Rasulullah shallallahu 'alaihi wa sallam bersabda: &ldquo;Barangsiapa mandi kemudian mendatangi sholat Jum'at, lalu sholat semampunya, kemudian diam mendengarkan hingga khotib selesai berkhutbah, lalu sholat bersama imam, maka diampuni dosanya antara Jum'at itu dan Jum'at berikutnya, ditambah tiga hari.&rdquo;</p>
+      <div class="src">HR. Muslim no. 857</div>
     </div>
 
     <div class="hd">
       <span class="no">Hadits 3</span>
-      <p class="ar">«مَنْ تَصَدَّقَ بِعَدْلِ تَمْرَةٍ مِنْ كَسْبٍ طَيِّبٍ، وَلَا يَقْبَلُ اللَّهُ إِلَّا الطَّيِّبَ، فَإِنَّ اللَّهَ يَتَقَبَّلُهَا بِيَمِينِهِ، ثُمَّ يُرَبِّيهَا لِصَاحِبِهِ كَمَا يُرَبِّي أَحَدُكُمْ فَلُوَّهُ، حَتَّى تَكُونَ مِثْلَ الْجَبَلِ»</p>
-      <p class="tr">Dari Abu Hurairah radhiyallahu 'anhu, Rasulullah shallallahu 'alaihi wa sallam bersabda: &ldquo;Barangsiapa bersedekah senilai sebutir kurma dari penghasilan yang halal, dan Allah tidak menerima kecuali yang baik, maka Allah menerimanya dengan tangan kanan-Nya, lalu merawatnya untuk pemiliknya sebagaimana salah seorang dari kalian merawat anak kudanya, hingga sedekah itu menjadi sebesar gunung.&rdquo;</p>
-      <div class="src">HR. Bukhari no. 1410 dan Muslim no. 1014</div>
+      <p class="ar">«إِذَا قُلْتَ لِصَاحِبِكَ يَوْمَ الْجُمُعَةِ: أَنْصِتْ، وَالْإِمَامُ يَخْطُبُ، فَقَدْ لَغَوْتَ»</p>
+      <p class="tr">Dari Abu Hurairah radhiyallahu 'anhu, Rasulullah shallallahu 'alaihi wa sallam bersabda: &ldquo;Apabila engkau berkata kepada temanmu pada hari Jum'at, &lsquo;Diamlah!&rsquo;, sementara imam sedang berkhutbah, maka sungguh engkau telah berbuat sia-sia.&rdquo;</p>
+      <div class="src">HR. Bukhari no. 934 dan Muslim no. 851</div>
     </div>
     <div class="hnote">Nomor hadits mengikuti penomoran yang umum dipakai dan dapat berbeda antar cetakan. Teks Arab dan terjemahan sebaiknya diperiksa kembali sebelum disebarkan.</div>
   </div>
@@ -456,6 +458,10 @@ document.getElementById("tbl").innerHTML =
     if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(done,()=>{});
     else { const a=document.createElement("textarea"); a.value=t; document.body.appendChild(a); a.select(); try{document.execCommand("copy"); done();}catch(e){} a.remove(); }
   };
+  // tampilkan total kunjungan (counter publik GoatCounter)
+  fetch("https://dkm.goatcounter.com/counter/TOTAL.json").then(r=>r.ok?r.json():null).then(j=>{
+    if(j && j.count){ document.getElementById("hits").textContent=j.count; document.getElementById("hitsWrap").style.display=""; }
+  }).catch(()=>{});
   addEventListener("hashchange",show); show();
 })();
 </script>
